@@ -16,7 +16,7 @@ func TestShorten_Success(t *testing.T) {
 	handler := New("http://localhost:8080", store)
 
 	reqBody := `{"url": "https://www.example.com/test"}`
-	req := httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewBufferString(reqBody))
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/shortURL", bytes.NewBufferString(reqBody))
 	req.Header.Set("Content-Type", "application/json")
 	rec := httptest.NewRecorder()
 
@@ -49,7 +49,7 @@ func TestShorten_Idempotency(t *testing.T) {
 	reqBody := `{"url": "https://www.example.com/idempotent"}`
 
 	// First request
-	req1 := httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewBufferString(reqBody))
+	req1 := httptest.NewRequest(http.MethodPost, "/api/v1/shortURL", bytes.NewBufferString(reqBody))
 	rec1 := httptest.NewRecorder()
 	handler.Shorten(rec1, req1)
 
@@ -57,7 +57,7 @@ func TestShorten_Idempotency(t *testing.T) {
 	json.NewDecoder(rec1.Body).Decode(&resp1)
 
 	// Second request with same URL
-	req2 := httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewBufferString(reqBody))
+	req2 := httptest.NewRequest(http.MethodPost, "/api/v1/shortURL", bytes.NewBufferString(reqBody))
 	rec2 := httptest.NewRecorder()
 	handler.Shorten(rec2, req2)
 
@@ -73,7 +73,7 @@ func TestShorten_InvalidJSON(t *testing.T) {
 	store := storage.New()
 	handler := New("http://localhost:8080", store)
 
-	req := httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewBufferString("invalid json"))
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/shortURL", bytes.NewBufferString("invalid json"))
 	rec := httptest.NewRecorder()
 
 	handler.Shorten(rec, req)
@@ -88,7 +88,7 @@ func TestShorten_EmptyURL(t *testing.T) {
 	handler := New("http://localhost:8080", store)
 
 	reqBody := `{"url": ""}`
-	req := httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewBufferString(reqBody))
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/shortURL", bytes.NewBufferString(reqBody))
 	rec := httptest.NewRecorder()
 
 	handler.Shorten(rec, req)
@@ -103,7 +103,7 @@ func TestShorten_InvalidURL(t *testing.T) {
 	handler := New("http://localhost:8080", store)
 
 	reqBody := `{"url": "not-a-valid-url"}`
-	req := httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewBufferString(reqBody))
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/shortURL", bytes.NewBufferString(reqBody))
 	rec := httptest.NewRecorder()
 
 	handler.Shorten(rec, req)
@@ -117,7 +117,7 @@ func TestShorten_WrongMethod(t *testing.T) {
 	store := storage.New()
 	handler := New("http://localhost:8080", store)
 
-	req := httptest.NewRequest(http.MethodGet, "/shorten", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/shortURL", nil)
 	rec := httptest.NewRecorder()
 
 	handler.Shorten(rec, req)
@@ -133,7 +133,7 @@ func TestRedirect_Success(t *testing.T) {
 
 	// First, create a short URL
 	reqBody := `{"url": "https://www.example.com/redirect-test"}`
-	createReq := httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewBufferString(reqBody))
+	createReq := httptest.NewRequest(http.MethodPost, "/api/v1/shortURL", bytes.NewBufferString(reqBody))
 	createRec := httptest.NewRecorder()
 	handler.Shorten(createRec, createReq)
 

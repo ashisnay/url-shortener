@@ -13,7 +13,7 @@ A simple, idempotent URL shortening service written in Go.
 
 ### Create Short URL
 
-**POST** `/shorten`
+**POST** `/api/v1/shortURL`
 
 Create a shortened URL from a long URL.
 
@@ -117,7 +117,7 @@ go test -cover ./...
 ### Create a short URL using curl
 
 ```bash
-curl -X POST http://localhost:8080/shorten \
+curl -X POST http://localhost:8080/api/v1/shortURL \
   -H "Content-Type: application/json" \
   -d '{"url": "https://www.google.com/search?q=golang"}'
 ```

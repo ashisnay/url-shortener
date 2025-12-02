@@ -21,10 +21,13 @@ func main() {
 
 	// Setup routes
 	mux := http.NewServeMux()
-	
-	// POST /shorten - Create a short URL
-	mux.HandleFunc("/shorten", handler.Shorten)
-	
+
+	// GET /api/v1/health - Health check endpoint
+	mux.HandleFunc("/api/v1/health", handler.Health)
+
+	// POST /api/v1/shortURL - Create a short URL
+	mux.HandleFunc("/api/v1/shortURL", handler.Shorten)
+
 	// GET /{shortCode} - Redirect to original URL
 	mux.HandleFunc("/", handler.Redirect)
 
@@ -33,8 +36,9 @@ func main() {
 	fmt.Printf("URL Shortener service starting on %s\n", addr)
 	fmt.Printf("Base URL: %s\n", baseURL)
 	fmt.Println("Endpoints:")
-	fmt.Println("  POST /shorten - Create a short URL")
-	fmt.Println("  GET /{shortCode} - Redirect to original URL")
+	fmt.Println("  GET  /api/v1/health - Health check")
+	fmt.Println("  POST /api/v1/shortURL - Create a short URL")
+	fmt.Println("  GET  /{shortCode} - Redirect to original URL")
 
 	if err := http.ListenAndServe(addr, mux); err != nil {
 		log.Fatal(err)

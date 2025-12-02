@@ -99,6 +99,13 @@ func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, longURL, http.StatusFound)
 }
 
+// Health handles health check requests
+func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "healthy"})
+}
+
 // writeError writes a JSON error response
 func (h *Handler) writeError(w http.ResponseWriter, message string, status int) {
 	w.Header().Set("Content-Type", "application/json")
